@@ -61,7 +61,7 @@ def win_round(horse):
             insert_text(text_diary, f'Этот забег принёс Вам {int(win)}')
         else:
             result += 'К сожалению, ваша ставка не сыграла.'
-        messagebox.showinfo('результат', result)
+        messagebox.showinfo('РЕЗУЛЬТАТ', result)
     else:
         messagebox.showinfo('Забег признан не состоявшимся', 'До финиша никто не дошёл')
         insert_text(text_diary, 'Забег признан не состоявшимся.')
@@ -91,7 +91,7 @@ def win_round(horse):
     refresh_combo("")
     view_weather(text_diary, time_day, weather)
     health_horse()
-    insert_text(f'Ваши средства: {int(money)}')
+    insert_text(text_diary, f'Ваши средства: {int(money)}')
 
     if money < 1:
         messagebox.showinfo("Игра остановлена")
@@ -119,9 +119,13 @@ def run_horse():
 def problem_horse():
     global reverse01, reverse02, reverse03, reverse04
     global play01, play02, play03, play04
+    global state01, state02, state03, state04
     global fast_speed01, fast_speed02, fast_speed03, fast_speed04
+
     horse = randint(1, 4)
+
     max_rand = 10000
+
     if horse == 1 and play01 and x01 > 0:
         if randint(0, max_rand) < state01 * 5:
             reverse01 = not reverse01
@@ -132,7 +136,7 @@ def problem_horse():
         elif randint(0, max_rand) < state01 * 5 and not fast_speed01:
             fast_speed01 = True
             messagebox.showinfo('', f'Лошадь {name_horse01} ускоряется!')
-    elif horse == 2:
+    elif horse == 2 and play02 and x02 > 0:
         if randint(0, max_rand) < state02 * 5:
             reverse02 = not reverse02
             messagebox.showinfo('', f'Лошадь {name_horse02} развернулась и бежит в другую сторону!')
@@ -142,7 +146,7 @@ def problem_horse():
         elif randint(0, max_rand) < state02 * 5 and not fast_speed01:
             fast_speed02 = True
             messagebox.showinfo('', f'Лошадь {name_horse02} ускоряется!')
-    elif horse == 3:
+    elif horse == 3 and play03 and x03 > 0:
         if randint(0, max_rand) < state03 * 5:
             reverse03 = not reverse03
             messagebox.showinfo('', f'Лошадь {name_horse03} развернулась и бежит в другую сторону!')
@@ -152,7 +156,7 @@ def problem_horse():
         elif randint(0, max_rand) < state03 * 5 and not fast_speed01:
             fast_speed03 = True
             messagebox.showinfo('', f'Лошадь {name_horse03} ускоряется!')
-    elif horse == 4:
+    elif horse == 4 and play04 and x04 > 0:
         if randint(0, max_rand) < state04 * 5:
             reverse04 = not reverse04
             messagebox.showinfo('', f'Лошадь {name_horse04} развернулась и бежит в другую сторону!')
@@ -166,6 +170,7 @@ def problem_horse():
 
 def move_horse():
     global x01, x02, x03, x04
+
     if randint(0, 100) < 20:
         problem_horse()
 
@@ -293,6 +298,16 @@ default_money = 10000
 weather = randint(1, 5)
 time_day = randint(1, 4)
 
+state01 = randint(1, 5)
+state02 = randint(1, 5)
+state03 = randint(1, 5)
+state04 = randint(1, 5)
+
+win_coefficient01 = int(100 + randint(1, 30 + state01 * 60)) / 100
+win_coefficient02 = int(100 + randint(1, 30 + state02 * 60)) / 100
+win_coefficient03 = int(100 + randint(1, 30 + state03 * 60)) / 100
+win_coefficient04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+
 POS_X = root.winfo_screenwidth() // 2 - WIDTH // 2
 POS_Y = root.winfo_screenheight() // 2 - HEIGHT // 2
 
@@ -350,23 +365,23 @@ label_horse04 = Label(text="Ставка на лошадь №4")
 label_horse04.place(x=20, y=540)
 
 horse01_game = BooleanVar()
-horse01_game.set(False)
-horse01_check = Checkbutton(text=name_horse01, variable=horse01_game, onvalue=True, offvalue=False)
+horse01_game.set(0)
+horse01_check = Checkbutton(text=name_horse01, variable=horse01_game, onvalue=1, offvalue=0)
 horse01_check.place(x=150, y=448)
 
 horse02_game = BooleanVar()
-horse02_game.set(False)
-horse02_check = Checkbutton(text=name_horse02, variable=horse02_game, onvalue=True, offvalue=False)
+horse02_game.set(0)
+horse02_check = Checkbutton(text=name_horse02, variable=horse02_game, onvalue=1, offvalue=0)
 horse02_check.place(x=150, y=478)
 
 horse03_game = BooleanVar()
-horse03_game.set(False)
-horse03_check = Checkbutton(text=name_horse03, variable=horse03_game, onvalue=True, offvalue=False)
+horse03_game.set(0)
+horse03_check = Checkbutton(text=name_horse03, variable=horse03_game, onvalue=1, offvalue=0)
 horse03_check.place(x=150, y=508)
 
 horse04_game = BooleanVar()
-horse04_game.set(False)
-horse04_check = Checkbutton(text=name_horse04, variable=horse04_game, onvalue=True, offvalue=False)
+horse04_game.set(0)
+horse04_check = Checkbutton(text=name_horse04, variable=horse04_game, onvalue=1, offvalue=0)
 horse04_check.place(x=150, y=538)
 
 horse01_check['state'] = 'disabled'
@@ -375,18 +390,22 @@ horse03_check['state'] = 'disabled'
 horse04_check['state'] = 'disabled'
 
 bet_01 = ttk.Combobox(root)
+bet_02 = ttk.Combobox(root)
+bet_03 = ttk.Combobox(root)
+bet_04 = ttk.Combobox(root)
+
 bet_01["state"] = "readonly"
 bet_01.place(x=280, y=450)
 
-bet_02 = ttk.Combobox(root)
+
 bet_02["state"] = "readonly"
 bet_02.place(x=280, y=480)
 
-bet_03 = ttk.Combobox(root)
+
 bet_03["state"] = "readonly"
 bet_03.place(x=280, y=510)
 
-bet_04 = ttk.Combobox(root)
+
 bet_04["state"] = "readonly"
 bet_04.place(x=280, y=540)
 
@@ -412,18 +431,9 @@ bet_02.current(0)
 bet_03.current(0)
 bet_04.current(0)
 
-state01 = randint(1, 5)
-state02 = randint(1, 5)
-state03 = randint(1, 5)
-state04 = randint(1, 5)
-
-win_coefficient01 = int(100 + randint(1, 30 + state01 * 60)) / 100
-win_coefficient02 = int(100 + randint(1, 30 + state02 * 60)) / 100
-win_coefficient03 = int(100 + randint(1, 30 + state03 * 60)) / 100
-win_coefficient04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+start_button['command'] = run_horse
 
 view_weather(text_diary, time_day, weather)
-
 health_horse()
 
 root.mainloop()
