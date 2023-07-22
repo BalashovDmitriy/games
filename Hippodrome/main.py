@@ -21,17 +21,97 @@ def run_horse():
     move_horse()
 
 
+def problem_horse():
+    global reverse01, reverse02, reverse03, reverse04
+    global play01, play02, play03, play04
+    global fast_speed01, fast_speed02, fast_speed03, fast_speed04
+    horse = randint(1, 4)
+    max_rand = 10000
+    if horse == 1 and play01 and x01 > 0:
+        if randint(0, max_rand) < state01 * 5:
+            reverse01 = not reverse01
+            messagebox.showinfo('', f'Лошадь {name_horse01} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state01 * 5:
+            play01 = False
+            messagebox.showinfo('', f'Лошадь {name_horse01} остановилась!')
+        elif randint(0, max_rand) < state01 * 5 and not fast_speed01:
+            fast_speed01 = True
+            messagebox.showinfo('', f'Лошадь {name_horse01} ускоряется!')
+    elif horse == 2:
+        if randint(0, max_rand) < state02 * 5:
+            reverse02 = not reverse02
+            messagebox.showinfo('', f'Лошадь {name_horse02} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state02 * 5:
+            play02 = False
+            messagebox.showinfo('', f'Лошадь {name_horse02} остановилась!')
+        elif randint(0, max_rand) < state02 * 5 and not fast_speed01:
+            fast_speed02 = True
+            messagebox.showinfo('', f'Лошадь {name_horse02} ускоряется!')
+    elif horse == 3:
+        if randint(0, max_rand) < state03 * 5:
+            reverse03 = not reverse03
+            messagebox.showinfo('', f'Лошадь {name_horse03} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state03 * 5:
+            play03 = False
+            messagebox.showinfo('', f'Лошадь {name_horse03} остановилась!')
+        elif randint(0, max_rand) < state03 * 5 and not fast_speed01:
+            fast_speed03 = True
+            messagebox.showinfo('', f'Лошадь {name_horse03} ускоряется!')
+    elif horse == 4:
+        if randint(0, max_rand) < state04 * 5:
+            reverse04 = not reverse04
+            messagebox.showinfo('', f'Лошадь {name_horse04} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state04 * 5:
+            play04 = False
+            messagebox.showinfo('', f'Лошадь {name_horse04} остановилась!')
+        elif randint(0, max_rand) < state04 * 5 and not fast_speed01:
+            fast_speed04 = True
+            messagebox.showinfo('', f'Лошадь {name_horse04} ускоряется!')
+
+
 def move_horse():
     global x01, x02, x03, x04
-    speed01 = randint(3, 10) / 10
-    speed02 = randint(3, 10) / 10
-    speed03 = randint(3, 10) / 10
-    speed04 = randint(3, 10) / 10
-    x01 += speed01 * randint(1, (7 - state01)) / state01
-    x02 += speed02 * randint(1, (7 - state02)) / state02
-    x03 += speed03 * randint(1, (7 - state03)) / state03
-    x04 += speed04 * randint(1, (7 - state04)) / state04
+    if randint(0, 100) < 20:
+        problem_horse()
+
+    speed01 = (randint(1, time_day + weather) + randint(1, int((7 - state01)) * 3)) / randint(10, 175)
+    speed02 = (randint(1, time_day + weather) + randint(1, int((7 - state02)) * 3)) / randint(10, 175)
+    speed03 = (randint(1, time_day + weather) + randint(1, int((7 - state03)) * 3)) / randint(10, 175)
+    speed04 = (randint(1, time_day + weather) + randint(1, int((7 - state04)) * 3)) / randint(10, 175)
+
+    multiple = 1.5
+
+    speed01 *= randint(1, 2 + state01) * (1 + fast_speed01 * multiple)
+    speed02 *= randint(1, 2 + state02) * (1 + fast_speed02 * multiple)
+    speed03 *= randint(1, 2 + state03) * (1 + fast_speed03 * multiple)
+    speed04 *= randint(1, 2 + state04) * (1 + fast_speed04 * multiple)
+
+    if play01:
+        if not reverse01:
+            x01 += speed01
+        else:
+            x01 -= speed01
+
+    if play02:
+        if not reverse02:
+            x02 += speed02
+        else:
+            x02 -= speed02
+
+    if play03:
+        if not reverse03:
+            x03 += speed03
+        else:
+            x03 -= speed03
+
+    if play04:
+        if not reverse04:
+            x04 += speed04
+        else:
+            x04 -= speed04
+
     horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04)
+
     if x01 < 952 and x02 < 952 and x03 < 952 and x04 < 952:
         root.after(5, move_horse)
 
@@ -84,6 +164,19 @@ name_horse01 = "Сталкер"
 name_horse02 = "Прожорливый"
 name_horse03 = "Ананас"
 name_horse04 = "Голиаф"
+
+reverse01 = False
+reverse02 = False
+reverse03 = False
+reverse04 = False
+play01 = True
+play02 = True
+play03 = True
+play04 = True
+fast_speed01 = False
+fast_speed02 = False
+fast_speed03 = False
+fast_speed04 = False
 
 default_money = 10000
 weather = randint(1, 5)
