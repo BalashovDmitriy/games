@@ -1,6 +1,18 @@
 from tkinter import *
 
 
+def get_values(summ):
+    value = []
+    if summ > 0:
+        for i in range(0, 11):
+            value.append(i * (int(summ) // 10))
+    else:
+        value.append(0)
+        if summ > 0:
+            value.append(summ)
+    return value
+
+
 def horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04):
     horse01.place(x=int(x01), y=20)
     horse02.place(x=int(x02), y=100)
