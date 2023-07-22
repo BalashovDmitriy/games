@@ -3,6 +3,13 @@ from src.utils import *
 from random import randint
 
 
+def health_horse():
+    insert_text(text_diary, get_health(name_horse01, state01, win_coefficient01))
+    insert_text(text_diary, get_health(name_horse02, state02, win_coefficient02))
+    insert_text(text_diary, get_health(name_horse03, state03, win_coefficient03))
+    insert_text(text_diary, get_health(name_horse04, state04, win_coefficient04))
+
+
 def run_horse():
     global money
     start_button['state'] = 'disabled'
@@ -79,6 +86,8 @@ name_horse03 = "Ананас"
 name_horse04 = "Голиаф"
 
 default_money = 10000
+weather = randint(1, 5)
+time_day = randint(1, 4)
 
 POS_X = root.winfo_screenwidth() // 2 - WIDTH // 2
 POS_Y = root.winfo_screenheight() // 2 - HEIGHT // 2
@@ -199,13 +208,22 @@ bet_02.current(0)
 bet_03.current(0)
 bet_04.current(0)
 
-bet_01.current(1)
-refresh_combo("")
-start_button['command'] = run_horse
-
 state01 = randint(1, 5)
 state02 = randint(1, 5)
 state03 = randint(1, 5)
 state04 = randint(1, 5)
+
+win_coefficient01 = int(100 + randint(1, 30 + state01 * 60)) / 100
+win_coefficient02 = int(100 + randint(1, 30 + state02 * 60)) / 100
+win_coefficient03 = int(100 + randint(1, 30 + state03 * 60)) / 100
+win_coefficient04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+
+bet_01.current(1)
+refresh_combo("")
+start_button['command'] = run_horse
+
+view_weather(text_diary, time_day, weather)
+
+health_horse()
 
 root.mainloop()

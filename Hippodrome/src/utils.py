@@ -1,6 +1,46 @@
 from tkinter import *
 
 
+def get_health(name, state, win):
+    s = f'Лошадь {name} '
+    if state == 1:
+        s += 'просто ракета!'
+    elif state == 2:
+        s += 'в отличном настроении!'
+    elif state == 3:
+        s += 'сурова и беспощадна.'
+    elif state == 4:
+        s += 'чувствует себя не очень.'
+    elif state == 5:
+        s += 'сильно болеет'
+    s += f' ({win}:1)'
+    return s
+
+
+def view_weather(text_diary, time_day, weather):
+    s = 'Сейчас на ипподроме '
+    if time_day == 1:
+        s += 'ночь, '
+    elif time_day == 2:
+        s += 'утро, '
+    elif time_day == 3:
+        s += 'день, '
+    elif time_day == 4:
+        s += 'вечер, '
+
+    if weather == 1:
+        s += 'льёт сильный дождь.'
+    elif weather == 2:
+        s += 'моросит дождик.'
+    elif weather == 3:
+        s += 'облачно.'
+    elif weather == 4:
+        s += 'безоблачно, ветер.'
+    elif weather == 5:
+        s += 'безоблачно, прекрасная погода.'
+    insert_text(text_diary, s)
+
+
 def get_values(summ):
     value = []
     if summ > 0:
