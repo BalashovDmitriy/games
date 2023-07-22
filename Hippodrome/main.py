@@ -1,5 +1,32 @@
 from tkinter import ttk, messagebox
 from src.utils import *
+from random import randint
+
+
+def run_horse():
+    global money
+    start_button['state'] = 'disabled'
+    bet_01['state'] = 'disabled'
+    bet_02['state'] = 'disabled'
+    bet_03['state'] = 'disabled'
+    bet_04['state'] = 'disabled'
+    money -= summ01.get() + summ02.get() + summ03.get() + summ04.get()
+    move_horse()
+
+
+def move_horse():
+    global x01, x02, x03, x04
+    speed01 = randint(3, 10) / 10
+    speed02 = randint(3, 10) / 10
+    speed03 = randint(3, 10) / 10
+    speed04 = randint(3, 10) / 10
+    x01 += speed01 * randint(1, (7 - state01)) / state01
+    x02 += speed02 * randint(1, (7 - state02)) / state02
+    x03 += speed03 * randint(1, (7 - state03)) / state03
+    x04 += speed04 * randint(1, (7 - state04)) / state04
+    horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04)
+    if x01 < 952 and x02 < 952 and x03 < 952 and x04 < 952:
+        root.after(5, move_horse)
 
 
 def refresh_combo(event):
@@ -10,6 +37,11 @@ def refresh_combo(event):
     bet_02['values'] = get_values(int(money - summ01.get() - summ03.get() - summ04.get()))
     bet_03['values'] = get_values(int(money - summ01.get() - summ02.get() - summ04.get()))
     bet_04['values'] = get_values(int(money - summ01.get() - summ02.get() - summ03.get()))
+
+    if summ > 0:
+        start_button['state'] = 'normal'
+    else:
+        start_button['state'] = 'disabled'
 
     if summ01.get() > 0:
         horse01_game.set(True)
@@ -74,6 +106,7 @@ horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04)
 
 start_button = Button(text="СТАРТ", font="Arial 20 bold", width=61, background="#37AA37")
 start_button.place(x=20, y=370)
+start_button['state'] = 'disabled'
 
 text_diary = Text(width=70, height=8, wrap=WORD)
 text_diary.place(x=530, y=450)
@@ -165,5 +198,14 @@ bet_01.current(0)
 bet_02.current(0)
 bet_03.current(0)
 bet_04.current(0)
+
+bet_01.current(1)
+refresh_combo("")
+start_button['command'] = run_horse
+
+state01 = randint(1, 5)
+state02 = randint(1, 5)
+state03 = randint(1, 5)
+state04 = randint(1, 5)
 
 root.mainloop()
