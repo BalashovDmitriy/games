@@ -3,6 +3,101 @@ from src.utils import *
 from random import randint
 
 
+def setup_horse():
+    global state01, state02, state03, state04
+    global weather, time_day
+    global win_coefficient01, win_coefficient02, win_coefficient03, win_coefficient04
+    global play01, play02, play03, play04
+    global reverse01, reverse02, reverse03, reverse04
+    global fast_speed01, fast_speed02, fast_speed03, fast_speed04
+
+    weather = randint(1, 5)
+    time_day = randint(1, 4)
+
+    state01 = randint(1, 5)
+    state02 = randint(1, 5)
+    state03 = randint(1, 5)
+    state04 = randint(1, 5)
+
+    win_coefficient01 = int(100 + randint(1, 30 + state01 * 60)) / 100
+    win_coefficient02 = int(100 + randint(1, 30 + state02 * 60)) / 100
+    win_coefficient03 = int(100 + randint(1, 30 + state03 * 60)) / 100
+    win_coefficient04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+
+    reverse01 = False
+    reverse02 = False
+    reverse03 = False
+    reverse04 = False
+
+    play01 = True
+    play02 = True
+    play03 = True
+    play04 = True
+
+    fast_speed01 = False
+    fast_speed02 = False
+    fast_speed03 = False
+    fast_speed04 = False
+
+
+def win_round(horse):
+    global x01, x02, x03, x04, money
+    result = 'К финишу пришла лошадь '
+    if horse == 1:
+        result += name_horse01
+        win = summ01.get() * win_coefficient01
+    elif horse == 2:
+        result += name_horse02
+        win = summ02.get() * win_coefficient02
+    elif horse == 3:
+        result += name_horse03
+        win = summ03.get() * win_coefficient03
+    elif horse == 4:
+        result += name_horse04
+        win = summ04.get() * win_coefficient04
+    if horse > 0:
+        result += f'! Вы выиграли {int(win)}'
+        if win > 0:
+            insert_text(text_diary, f'Этот забег принёс Вам {int(win)}')
+        else:
+            result += 'К сожалению, ваша ставка не сыграла.'
+        messagebox.showinfo('результат', result)
+    else:
+        messagebox.showinfo('Забег признан не состоявшимся', 'До финиша никто не дошёл')
+        insert_text(text_diary, 'Забег признан не состоявшимся.')
+        win = summ01.get() + summ02.get() + summ03.get() + summ04.get()
+
+    money += win
+    save_money(int(money))
+
+    setup_horse()
+
+    start_button['state'] = 'normal'
+    bet_01['state'] = 'readonly'
+    bet_02['state'] = 'readonly'
+    bet_03['state'] = 'readonly'
+    bet_04['state'] = 'readonly'
+    bet_01.current(0)
+    bet_02.current(0)
+    bet_03.current(0)
+    bet_04.current(0)
+
+    x01 = 20
+    x02 = 20
+    x03 = 20
+    x04 = 20
+    horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04)
+
+    refresh_combo("")
+    view_weather(text_diary, time_day, weather)
+    health_horse()
+    insert_text(f'Ваши средства: {int(money)}')
+
+    if money < 1:
+        messagebox.showinfo("Игра остановлена")
+        exit()
+
+
 def health_horse():
     insert_text(text_diary, get_health(name_horse01, state01, win_coefficient01))
     insert_text(text_diary, get_health(name_horse02, state02, win_coefficient02))
@@ -21,19 +116,115 @@ def run_horse():
     move_horse()
 
 
+def problem_horse():
+    global reverse01, reverse02, reverse03, reverse04
+    global play01, play02, play03, play04
+    global fast_speed01, fast_speed02, fast_speed03, fast_speed04
+    horse = randint(1, 4)
+    max_rand = 10000
+    if horse == 1 and play01 and x01 > 0:
+        if randint(0, max_rand) < state01 * 5:
+            reverse01 = not reverse01
+            messagebox.showinfo('', f'Лошадь {name_horse01} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state01 * 5:
+            play01 = False
+            messagebox.showinfo('', f'Лошадь {name_horse01} остановилась!')
+        elif randint(0, max_rand) < state01 * 5 and not fast_speed01:
+            fast_speed01 = True
+            messagebox.showinfo('', f'Лошадь {name_horse01} ускоряется!')
+    elif horse == 2:
+        if randint(0, max_rand) < state02 * 5:
+            reverse02 = not reverse02
+            messagebox.showinfo('', f'Лошадь {name_horse02} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state02 * 5:
+            play02 = False
+            messagebox.showinfo('', f'Лошадь {name_horse02} остановилась!')
+        elif randint(0, max_rand) < state02 * 5 and not fast_speed01:
+            fast_speed02 = True
+            messagebox.showinfo('', f'Лошадь {name_horse02} ускоряется!')
+    elif horse == 3:
+        if randint(0, max_rand) < state03 * 5:
+            reverse03 = not reverse03
+            messagebox.showinfo('', f'Лошадь {name_horse03} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state03 * 5:
+            play03 = False
+            messagebox.showinfo('', f'Лошадь {name_horse03} остановилась!')
+        elif randint(0, max_rand) < state03 * 5 and not fast_speed01:
+            fast_speed03 = True
+            messagebox.showinfo('', f'Лошадь {name_horse03} ускоряется!')
+    elif horse == 4:
+        if randint(0, max_rand) < state04 * 5:
+            reverse04 = not reverse04
+            messagebox.showinfo('', f'Лошадь {name_horse04} развернулась и бежит в другую сторону!')
+        elif randint(0, max_rand) < state04 * 5:
+            play04 = False
+            messagebox.showinfo('', f'Лошадь {name_horse04} остановилась!')
+        elif randint(0, max_rand) < state04 * 5 and not fast_speed01:
+            fast_speed04 = True
+            messagebox.showinfo('', f'Лошадь {name_horse04} ускоряется!')
+
+
 def move_horse():
     global x01, x02, x03, x04
-    speed01 = randint(3, 10) / 10
-    speed02 = randint(3, 10) / 10
-    speed03 = randint(3, 10) / 10
-    speed04 = randint(3, 10) / 10
-    x01 += speed01 * randint(1, (7 - state01)) / state01
-    x02 += speed02 * randint(1, (7 - state02)) / state02
-    x03 += speed03 * randint(1, (7 - state03)) / state03
-    x04 += speed04 * randint(1, (7 - state04)) / state04
+    if randint(0, 100) < 20:
+        problem_horse()
+
+    speed01 = (randint(1, time_day + weather) + randint(1, int((7 - state01)) * 3)) / randint(10, 175)
+    speed02 = (randint(1, time_day + weather) + randint(1, int((7 - state02)) * 3)) / randint(10, 175)
+    speed03 = (randint(1, time_day + weather) + randint(1, int((7 - state03)) * 3)) / randint(10, 175)
+    speed04 = (randint(1, time_day + weather) + randint(1, int((7 - state04)) * 3)) / randint(10, 175)
+
+    multiple = 1.5
+
+    speed01 *= randint(1, 2 + state01) * (1 + fast_speed01 * multiple)
+    speed02 *= randint(1, 2 + state02) * (1 + fast_speed02 * multiple)
+    speed03 *= randint(1, 2 + state03) * (1 + fast_speed03 * multiple)
+    speed04 *= randint(1, 2 + state04) * (1 + fast_speed04 * multiple)
+
+    if play01:
+        if not reverse01:
+            x01 += speed01
+        else:
+            x01 -= speed01
+
+    if play02:
+        if not reverse02:
+            x02 += speed02
+        else:
+            x02 -= speed02
+
+    if play03:
+        if not reverse03:
+            x03 += speed03
+        else:
+            x03 -= speed03
+
+    if play04:
+        if not reverse04:
+            x04 += speed04
+        else:
+            x04 -= speed04
+
     horse_place_in_window(horse01, x01, horse02, x02, horse03, x03, horse04, x04)
+    all_play = play01 or play02 or play03 or play04
+    all_x = x01 < 0 and x02 < 0 and x03 < 0 and x04 < 0
+    all_reverse = reverse01 and reverse02 and reverse03 and reverse04
+
+    if not all_play or all_x or all_reverse:
+        win_round(0)
+        return 0
+
     if x01 < 952 and x02 < 952 and x03 < 952 and x04 < 952:
         root.after(5, move_horse)
+    else:
+        if x01 >= 952:
+            win_round(1)
+        if x02 >= 952:
+            win_round(2)
+        if x03 >= 952:
+            win_round(3)
+        if x04 >= 952:
+            win_round(4)
 
 
 def refresh_combo(event):
@@ -84,6 +275,19 @@ name_horse01 = "Сталкер"
 name_horse02 = "Прожорливый"
 name_horse03 = "Ананас"
 name_horse04 = "Голиаф"
+
+reverse01 = False
+reverse02 = False
+reverse03 = False
+reverse04 = False
+play01 = True
+play02 = True
+play03 = True
+play04 = True
+fast_speed01 = False
+fast_speed02 = False
+fast_speed03 = False
+fast_speed04 = False
 
 default_money = 10000
 weather = randint(1, 5)
@@ -217,10 +421,6 @@ win_coefficient01 = int(100 + randint(1, 30 + state01 * 60)) / 100
 win_coefficient02 = int(100 + randint(1, 30 + state02 * 60)) / 100
 win_coefficient03 = int(100 + randint(1, 30 + state03 * 60)) / 100
 win_coefficient04 = int(100 + randint(1, 30 + state04 * 60)) / 100
-
-bet_01.current(1)
-refresh_combo("")
-start_button['command'] = run_horse
 
 view_weather(text_diary, time_day, weather)
 
