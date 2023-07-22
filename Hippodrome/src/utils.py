@@ -43,7 +43,7 @@ def view_weather(text_diary, time_day, weather):
 
 def get_values(summ):
     value = []
-    if summ > 0:
+    if summ > 9:
         for i in range(0, 11):
             value.append(i * (int(summ) // 10))
     else:
